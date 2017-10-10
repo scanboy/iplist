@@ -1,7 +1,19 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
+    fs      = require('fs'),
+    urls    = require('url'),
+    util    = require('util'),
+    https   = require('https'),
     morgan  = require('morgan');
+    
+var message = '';
+var timer = 0;
+var style;
+var script;
+var path = 'public/';
+var ipfile = 'iplist.json';
+var iplist = {};
     
 Object.assign=require('object-assign')
 
@@ -55,6 +67,10 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
 //     console.log('Connected to MongoDB at: %s', mongoURL);
 //   });
 // };
+app.post('/upload', function(req, res) {
+  fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
+  res.redirect('/');
+});
 
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
