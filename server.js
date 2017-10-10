@@ -1,10 +1,10 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
-    fs      = require('fs'),
-    urls    = require('url'),
-    util    = require('util'),
-    https   = require('https'),
+    // fs      = require('fs'),
+    // urls    = require('url'),
+    // util    = require('util'),
+    // https   = require('https'),
     morgan  = require('morgan');
     
 var message = '';
@@ -64,10 +64,10 @@ app.get('/pagecount', function (req, res) {
 ////////////////////////////////////////////////////////////////////////
 // Post endpoints
 ////////////////////////////////////////////////////////////////////////
-app.post('/upload', function(req, res) {
-  fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
-  res.redirect('/');
-});
+// app.post('/upload', function(req, res) {
+//   fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
+//   res.redirect('/');
+// });
 
 // error handling
 app.use(function(err, req, res, next){
