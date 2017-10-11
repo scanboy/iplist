@@ -24,8 +24,98 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
 ////////////////////////////////////////////////////////////////////////
+// Read all info from files.
+////////////////////////////////////////////////////////////////////////
+var readInfo = function() {
+  fs.exists(path + ipfile, function (exists) {
+    if (exists) {
+      iplist = JSON.parse(fs.readFileSync(path + ipfile).toString());
+    }
+  });
+  fs.exists('css/index.css', function (exists) {
+    if (exists) {
+      style = '<style>' + fs.readFileSync('css/index.css').toString() + '</style>';
+    }
+  });
+  fs.exists('js/index.js', function (exists) {
+    if (exists) {
+      script = '<script>' + fs.readFileSync('js/index.js').toString() + '</script>';
+    }
+  });
+};
+
+
+////////////////////////////////////////////////////////////////////////
+// Buile main page
+////////////////////////////////////////////////////////////////////////
+var basePage = function() {
+  var page;
+  
+  page = '<html><head>' + style + script + '</head><body onload="init(' + timer + ')"><h3>IP list:</h3><table border="1"><tr><th>Machine</th><th>IP</th><th>Last Update</th></tr>';
+      
+  // IP list  
+  Object.keys(iplist).sort().forEach(function (k) {
+    page += '<tr><td>' + k + '</td><td>' + iplist[k][0] + '</td><td>' + iplist[k][1] + '</td></tr><tr>';
+  });
+  page += '</table><br/><hr/>';
+  return(page);
+};
+
+var loginPage = function() {
+  var page;
+  
+  page = '<table style="margin-left: 0;"><tr><td><h3>Login:</h3></td><td><h3 style="color: #d60000;">&nbsp;&nbsp;' + message + '</h3></td></tr></table><form id="login" action="/login" method="post"><table><tr><td>Username</td><td>Password</td></tr><tr><td><input type="text" name="user"></td><td><input type="password" name="pwd" onkeypress="checkKeyPress(event, \'13\', enterKey);"></td><td><span onclick=\'document.getElementById("login").submit();\'>Login</span></td></tr></table></form>';
+  page += '</body></html>';
+  return (page);
+};
+
+var accessPage = function() {
+  var page;
+  var files = fs.readdirSync(path);
+
+  //message = 'Session timed out. Please login again.';
+  //timer = '';
+  // File access
+  page = '<h3>Files available in: <b style="color: blue;padding-left: 10px;">public/</b></h3><form id="rmlist" action="/remove" method="post"><table class="space"><tr><th>Name</th><th>Last modified</th><th>Size</th></tr><tr><th colspan="3"><hr/></th></tr>';
+  for (var f in files) {
+    var stats = fs.statSync(path + files[f]);
+
+    page += '<tr><td><input type="checkbox" name="rmlist" value="' + files[f] + '" onclick="toggleSubmit(this);"><a href="' + path + files[f] + '">' + files[f] + '</a></input></td><td>' + stats['mtime'] + '</td><td align=right>' + stats ['size'] + '</td></tr>';
+  }
+  page += '<tr><td colspan="3"><hr/></td></tr><tr><td><span id="remove" style="background: lightgrey;" onclick="null">Remove</span></td></tr></table></form><br/><hr/>';
+  
+  // File upload
+  page += '<h3>File upload:</h3><div class="invisible"><form id="upload" action="/upload" method="post" enctype="multipart/form-data"><input id="ifile" type="file" name="file" onchange=\'document.getElementById("upload").submit();\'/></form></div><table><tr><td><span onclick=\'document.getElementById("ifile").click();\'>Upload</span></td></tr></table>';
+  page += '</body></html>';
+  return(page);
+};
+
+////////////////////////////////////////////////////////////////////////
 // Get endpoints
 ////////////////////////////////////////////////////////////////////////
+app.get('/', function(req, res) {
+  if (!req.session.user) {
+    message = 'Session timed out. Please login again.';
+    timer = 0;
+    res.send(basePage() + loginPage());
+  } else {
+    req.session.cookie.maxAge = 1000 * 60 * 5;
+    res.send(basePage() + accessPage());
+  }
+});
+
+app.post('/login', function(req, res) {
+  if (req.body.user === 'klau' && req.body.pwd === '') {
+    req.session.user = "klau";
+    message = '';
+    timer = 1;
+  } else {
+    message = "Invalid username/password!";
+    timer = 0;
+  }
+  res.redirect('/');
+});
+
 app.get('/updateip', function(req, res) {
   var params = urls.parse(req.url, true).query;
 
@@ -34,48 +124,72 @@ app.get('/updateip', function(req, res) {
   fs.writeFileSync(path + 'iplist.json', JSON.stringify(iplist));
 });
 
-app.get('/', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  // if (!db) {
-  //   initDb(function(err){});
-  // }
-  // if (db) {
-  //   var col = db.collection('counts');
-  //   // Create a document with request IP and current time of request
-  //   col.insert({ip: req.ip, date: Date.now()});
-  //   col.count(function(err, count){
-  //     res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
-  //   });
-  // } else {
-  //   res.render('index.html', { pageCountMessage : null});
-  // }
-  res.send('<html><head></head><body><h1>welcome, klau!</h1></body></html>')
-});
-
-app.get('/pagecount', function (req, res) {
-  // try to initialize the db on every request if it's not already
-  // initialized.
-  // if (!db) {
-  //   initDb(function(err){});
-  // }
-  // if (db) {
-  //   db.collection('counts').count(function(err, count ){
-  //     res.send('{ pageCount: ' + count + '}');
-  //   });
-  // } else {
-  //   res.send('{ pageCount: -1 }');
-  // }
-  res.send('<html><head></head><body><h1>test</h1></body></html>')
-});
-
-////////////////////////////////////////////////////////////////////////
-// Post endpoints
-////////////////////////////////////////////////////////////////////////
-// app.post('/upload', function(req, res) {
-//   fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
-//   res.redirect('/');
+// app.get('/', function (req, res) {
+//   // try to initialize the db on every request if it's not already
+//   // initialized.
+//   // if (!db) {
+//   //   initDb(function(err){});
+//   // }
+//   // if (db) {
+//   //   var col = db.collection('counts');
+//   //   // Create a document with request IP and current time of request
+//   //   col.insert({ip: req.ip, date: Date.now()});
+//   //   col.count(function(err, count){
+//   //     res.render('index.html', { pageCountMessage : count, dbInfo: dbDetails });
+//   //   });
+//   // } else {
+//   //   res.render('index.html', { pageCountMessage : null});
+//   // }
+//   res.send('<html><head></head><body><h1>welcome, klau!</h1></body></html>')
 // });
+
+// app.get('/pagecount', function (req, res) {
+//   // try to initialize the db on every request if it's not already
+//   // initialized.
+//   // if (!db) {
+//   //   initDb(function(err){});
+//   // }
+//   // if (db) {
+//   //   db.collection('counts').count(function(err, count ){
+//   //     res.send('{ pageCount: ' + count + '}');
+//   //   });
+//   // } else {
+//   //   res.send('{ pageCount: -1 }');
+//   // }
+//   res.send('<html><head></head><body><h1>test</h1></body></html>')
+// });
+
+app.get('/public/:file', function(req, res) {
+  res.download(path + req.params.file);
+});
+
+app.get('/retrieve/:machine', function(req, res) {
+  if (req.params.machine in iplist) {
+    res.send(iplist[req.params.machine]);
+  } else {
+    res.send('No IP info for "' + req.params.machine + '"\n');
+  }
+});
+
+app.post('/remove', function(req, res) {
+  if (req.body.rmlist != undefined) {
+    var list = [];
+    if (typeof req.body.rmlist === 'string') {
+      list.push(req.body.rmlist);
+    } else {
+      list = req.body.rmlist;
+    }
+    for (var f in list) {
+      fs.unlinkSync(path + list[f]);
+    }
+  }
+  res.redirect('/');      
+});
+
+app.post('/upload', function(req, res) {
+  fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
+  res.redirect('/');
+});
 
 // error handling
 app.use(function(err, req, res, next){

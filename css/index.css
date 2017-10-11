@@ -1,0 +1,43 @@
+table {
+	margin-left: 20px;
+}
+
+hr {
+	border: dotted 1px #5da9f6;
+}
+
+.space td, .space th {
+	padding-right: 20px;
+}
+
+.invisible {
+	display: none;
+}
+
+label {
+	border: 1px solid grey;
+	border-radius: 5px;
+	padding: 0px 4px 0px 4px;
+}
+
+span {
+	font-family: "Arial";
+	font-size: 12px;
+	color: white;
+	border-radius: 5px;
+	padding: 3px 6px 2px 6px;
+	margin: 0;
+	background: #5da9f6;
+}
+
+span:active {
+	background: #1b63ae;
+}
+
+span:hover {
+	cursor: pointer;
+}
+
+input {
+	outline-width: 0;
+}
