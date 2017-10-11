@@ -26,6 +26,14 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
 ////////////////////////////////////////////////////////////////////////
 // Get endpoints
 ////////////////////////////////////////////////////////////////////////
+app.get('/updateip', function(req, res) {
+  var params = urls.parse(req.url, true).query;
+
+  iplist[params['machine']] = [params['ip'], params['time']];
+  res.send('Saved.\n');
+  fs.writeFileSync(path + 'iplist.json', JSON.stringify(iplist));
+};
+
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
   // initialized.
@@ -64,10 +72,10 @@ app.get('/pagecount', function (req, res) {
 ////////////////////////////////////////////////////////////////////////
 // Post endpoints
 ////////////////////////////////////////////////////////////////////////
-app.post('/upload', function(req, res) {
-  fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
-  res.redirect('/');
-});
+// app.post('/upload', function(req, res) {
+//   fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
+//   res.redirect('/');
+// });
 
 // error handling
 app.use(function(err, req, res, next){
