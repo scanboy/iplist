@@ -28,21 +28,15 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
 // Read all info from files.
 ////////////////////////////////////////////////////////////////////////
 var readInfo = function() {
-  fs.exists(path + ipfile, function (exists) {
-    if (exists) {
-      iplist = JSON.parse(fs.readFileSync(path + ipfile).toString());
-    }
-  });
-  fs.exists('css/index.css', function (exists) {
-    if (exists) {
+  try {
+    iplist = JSON.parse(fs.readFileSync(path + ipfile).toString());
+  } catch (err) {}
+  try {
       style = '<style>' + fs.readFileSync('css/index.css').toString() + '</style>';
-    }
-  });
-  fs.exists('js/index.js', function (exists) {
-    if (exists) {
+  } catch (err) {}
+  try {
       script = '<script>' + fs.readFileSync('js/index.js').toString() + '</script>';
-    }
-  });
+  } catch (err) {}
 };
 
 
@@ -95,7 +89,7 @@ var accessPage = function() {
 // Get endpoints
 ////////////////////////////////////////////////////////////////////////
 app.get('/', function(req, res) {
-  if (0) {
+  if (timer == 0) {
     message = 'Session timed out. Please login again.';
     timer = 0;
     res.send(basePage() + loginPage());
