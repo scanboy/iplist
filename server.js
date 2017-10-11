@@ -1,10 +1,10 @@
 //  OpenShift sample Node application
 var express = require('express'),
     app     = express(),
-    // fs      = require('fs'),
-    // urls    = require('url'),
-    // util    = require('util'),
-    // https   = require('https'),
+    fs      = require('fs'),
+    urls    = require('url'),
+    util    = require('util'),
+    https   = require('https'),
     morgan  = require('morgan');
     
 var message = '';
