@@ -109,7 +109,7 @@ app.post('/login', function(req, res) {
 
   try {
     auth = JSON.parse(fs.readFileSync(pwfile).toString());
-    if (req.body.user === 'klau' && req.body.pwd === '') {
+    if (req.body.user === auth["username"] && req.body.pwd === auth["password"]) {
       message = '';
       timer = 1;
     } else {
