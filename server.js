@@ -32,7 +32,7 @@ app.get('/updateip', function(req, res) {
   iplist[params['machine']] = [params['ip'], params['time']];
   res.send('Saved.\n');
   fs.writeFileSync(path + 'iplist.json', JSON.stringify(iplist));
-};
+});
 
 app.get('/', function (req, res) {
   // try to initialize the db on every request if it's not already
