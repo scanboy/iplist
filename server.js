@@ -13,6 +13,7 @@ var style;
 var script;
 var path = 'public/';
 var ipfile = 'iplist.json';
+var pwfile = 'password.json'
 var iplist = {};
 
 Object.assign=require('object-assign')
@@ -94,24 +95,30 @@ var accessPage = function() {
 // Get endpoints
 ////////////////////////////////////////////////////////////////////////
 app.get('/', function(req, res) {
-  if (!req.session.user) {
+  if (0) {
     message = 'Session timed out. Please login again.';
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
-    req.session.cookie.maxAge = 1000 * 60 * 5;
     res.send(basePage() + accessPage());
   }
 });
 
 app.post('/login', function(req, res) {
-  if (req.body.user === 'klau' && req.body.pwd === '') {
-    req.session.user = "klau";
-    message = '';
-    timer = 1;
-  } else {
-    message = "Invalid username/password!";
-    timer = 0;
+  var auth = {};
+
+  try {
+    auth = JSON.parse(fs.readFileSync(pwfile).toString());
+    if (req.body.user === 'klau' && req.body.pwd === '') {
+      message = '';
+      timer = 1;
+    } else {
+      message = "Invalid username/password!";
+      timer = 0;
+    }
+  } catch (err) {
+      message = "Username/password info not found!";
+      timer = 0;
   }
   res.redirect('/');
 });
@@ -194,14 +201,14 @@ app.post('/upload', function(req, res) {
 readInfo();
 
 // Authenticator
-app.use(express.cookieParser('sbellfanmossall'));
-app.use(function(req, res, next) {
-  express.cookieSession({
-    cookie: {
-      maxAge: 1000 * 60 * 5
-    },
-  })(req, res, next);
-});
+// app.use(express.cookieParser('sbellfanmossall'));
+// app.use(function(req, res, next) {
+//   express.cookieSession({
+//     cookie: {
+//       maxAge: 1000 * 60 * 5
+//     },
+//   })(req, res, next);
+// });
 
 // error handling
 app.use(function(err, req, res, next){
