@@ -64,10 +64,10 @@ app.get('/pagecount', function (req, res) {
 ////////////////////////////////////////////////////////////////////////
 // Post endpoints
 ////////////////////////////////////////////////////////////////////////
-// app.post('/upload', function(req, res) {
-//   fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
-//   res.redirect('/');
-// });
+app.post('/upload', function(req, res) {
+  fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
+  res.redirect('/');
+});
 
 // error handling
 app.use(function(err, req, res, next){
