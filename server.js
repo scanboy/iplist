@@ -191,6 +191,18 @@ app.post('/upload', function(req, res) {
   res.redirect('/');
 });
 
+readInfo();
+
+// Authenticator
+app.use(express.cookieParser('sbellfanmossall'));
+app.use(function(req, res, next) {
+  express.cookieSession({
+    cookie: {
+      maxAge: 1000 * 60 * 5
+    },
+  })(req, res, next);
+});
+
 // error handling
 app.use(function(err, req, res, next){
   console.error(err.stack);
