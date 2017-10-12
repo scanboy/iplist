@@ -104,7 +104,7 @@ app.post('/login', function(req, res) {
   try {
     auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user === auth["username"] && req.body.pwd === auth["password"]) {
-      message = '';
+      message = JSON.stringify(auth);
       timer = 1;
     } else {
       message = "Invalid username/password!";
