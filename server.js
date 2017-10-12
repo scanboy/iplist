@@ -93,7 +93,7 @@ app.get('/', function(req, res) {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
     res.send(JSON.stringify(auth));
   } catch (err) {
-    res.send("read failed")
+    res.send("read failed!")
   }  
   // if (timer == 0) {
   //   message = 'Session timed out. Please login again.';
