@@ -108,8 +108,9 @@ app.get('/', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-  fs.appendFile('log.txt', req.body.user + "\n");
-  fs.appendFile('log.txt', req.body.pwd + "\n");
+  fs.appendFile('log.txt', "forma info: " + JSON.stringify(req.body) + "\n");
+//  fs.appendFile('log.txt', req.body.user + "\n");
+//  fs.appendFile('log.txt', req.body.pwd + "\n");
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
