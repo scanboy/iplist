@@ -89,19 +89,19 @@ var accessPage = function() {
 // Get endpoints
 ////////////////////////////////////////////////////////////////////////
 app.get('/', function(req, res) {
-  try {
-    var auth = JSON.parse(fs.readFileSync(pwfile).toString());
-    res.send(auth["username"] + auth["password"]);
-  } catch (err) {
-    res.send("read failed!")
-  }  
-  // if (timer == 0) {
-  //   message = 'Session timed out. Please login again.';
-  //   timer = 0;
-  //   res.send(basePage() + loginPage());
-  // } else {
-  //   res.send(basePage() + accessPage());
-  // }
+  // try {
+  //   var auth = JSON.parse(fs.readFileSync(pwfile).toString());
+  //   res.send(auth["username"] + auth["password"]);
+  // } catch (err) {
+  //   res.send("read failed!")
+  // }  
+  if (timer == 0) {
+    message = 'Session timed out. Please login again.';
+    timer = 0;
+    res.send(basePage() + loginPage());
+  } else {
+    res.send(basePage() + accessPage());
+  }
 });
 
 app.post('/login', function(req, res) {
@@ -109,7 +109,7 @@ app.post('/login', function(req, res) {
 
   try {
     auth = JSON.parse(fs.readFileSync(pwfile).toString());
-    if (req.body.user === auth["username"] && req.body.pwd === auth["password"]) {
+    if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
       message = ''
       timer = 1;
     } else {
