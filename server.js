@@ -97,7 +97,7 @@ app.get('/', function(req, res) {
   // } catch (err) {
   //   res.send("read failed!")
   // } 
-  fs.appendFile('log.txt', "/ " + global.timer);
+  fs.appendFile('log.txt', "/ " + global.timer + "\n");
   if (global.timer == 0) {
     message = 'Session timed out. Please login again.';
 //    global.timer = 0;
@@ -108,23 +108,26 @@ app.get('/', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
+  fs.appendFile('log.txt', req.body.user + "\n");
+  fs.appendFile('log.txt', req.body.pwd + "\n");
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
       message = ''
       global.timer = 1;
-      fs.appendFile('log.txt', "/login: success " + global.timer);
+      fs.appendFile('log.txt', "/login: success " + global.timer + "\n");
     } else {
 //      message = JSON.stringify(auth);
       message = "Invalid username/password!";
       global.timer = 0;
-      fs.appendFile('log.txt', "/login: failed " + global.timer);
+      fs.appendFile('log.txt', "/login: failed " + global.timer + "\n");
     }
   } catch (err) {
 //    message = JSON.stringify(auth);
+    fs.appendFile('log.txt', "Error: " + err.message + "\n");
     message = "Username/password info not found!";
     global.timer = 0;
-    fs.appendFile('log.txt', "/login: catch " + global.timer);
+    fs.appendFile('log.txt', "/login: catch " + global.timer + "\n");
   }
   res.redirect('/');
 });
