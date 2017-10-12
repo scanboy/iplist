@@ -108,23 +108,21 @@ app.get('/', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-  var auth = {};
-
   try {
-    auth = JSON.parse(fs.readFileSync(pwfile).toString());
+    var auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
       message = ''
       global.timer = 1;
       fs.appendFile('log.txt', "/login: success " + global.timer);
     } else {
-      message = JSON.stringify(auth);
-//      message = "Invalid username/password!";
+//      message = JSON.stringify(auth);
+      message = "Invalid username/password!";
       global.timer = 0;
       fs.appendFile('log.txt', "/login: failed " + global.timer);
     }
   } catch (err) {
-    message = JSON.stringify(auth);
-//    message = "Username/password info not found!";
+//    message = JSON.stringify(auth);
+    message = "Username/password info not found!";
     global.timer = 0;
     fs.appendFile('log.txt', "/login: catch " + global.timer);
   }
