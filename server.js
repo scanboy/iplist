@@ -91,7 +91,7 @@ var accessPage = function() {
 app.get('/', function(req, res) {
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
-    res.send(JSON.stringify(auth));
+    res.send(auth["username"] + auth["password"]);
   } catch (err) {
     res.send("read failed!")
   }  
