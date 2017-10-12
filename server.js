@@ -8,13 +8,15 @@ var express = require('express'),
     morgan  = require('morgan');
     
 var message = '';
-var timer = 0;
+//var timer = 0;
 var style;
 var script;
 var path = 'public/';
 var ipfile = 'iplist.json';
-var pwfile = 'password.json'
+var pwfile = 'password.json';
 var iplist = {};
+
+global.timer = 0;
 
 Object.assign=require('object-assign')
 
@@ -94,10 +96,11 @@ app.get('/', function(req, res) {
   //   res.send(auth["username"] + auth["password"]);
   // } catch (err) {
   //   res.send("read failed!")
-  // }  
-  if (timer == 0) {
+  // } 
+  console.log(global.timer);
+  if (global.timer == 0) {
     message = 'Session timed out. Please login again.';
-    timer = 0;
+//    global.timer = 0;
     res.send(basePage() + loginPage());
   } else {
     res.send(basePage() + accessPage());
@@ -111,16 +114,16 @@ app.post('/login', function(req, res) {
     auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
       message = ''
-      timer = 1;
+      global.timer = 1;
     } else {
       message = JSON.stringify(auth);
 //      message = "Invalid username/password!";
-      timer = 0;
+      global.timer = 0;
     }
   } catch (err) {
     message = JSON.stringify(auth);
 //    message = "Username/password info not found!";
-    timer = 0;
+    global.timer = 0;
   }
   res.redirect('/');
 });
