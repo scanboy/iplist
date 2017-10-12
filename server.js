@@ -104,15 +104,17 @@ app.post('/login', function(req, res) {
   try {
     auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user === auth["username"] && req.body.pwd === auth["password"]) {
-      message = JSON.stringify(auth);
+      message = ''
       timer = 1;
     } else {
-      message = "Invalid username/password!";
+      message = JSON.stringify(auth);
+//      message = "Invalid username/password!";
       timer = 0;
     }
   } catch (err) {
-      message = "Username/password info not found!";
-      timer = 0;
+    message = JSON.stringify(auth);
+//    message = "Username/password info not found!";
+    timer = 0;
   }
   res.redirect('/');
 });
