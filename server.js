@@ -24,7 +24,7 @@ app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
 app.use(express.urlencoded());
-//app.use(express.multipart());
+app.use(express.multipart());
 
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
