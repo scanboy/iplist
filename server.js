@@ -23,7 +23,7 @@ Object.assign=require('object-assign')
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(express.body-parser());
 //app.use(express.multipart());
 
 app.use(express.cookie-parser('sbellfanmossall'));
