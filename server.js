@@ -11,7 +11,7 @@ var express = require('express'),
 //  multipart = require('connect-multiparty'),
     morgan  = require('morgan');
 
-var multipartMiddleware = multipart();
+//var multipartMiddleware = multipart();
 
 var message = '';
 //var timer = 0;
