@@ -27,8 +27,8 @@ app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
 app.use(express.urlencoded());
+app.use(express.multipart());
 //app.use(bodyParser.urlencoded());
-//app.use(express.multipart());
 
 // app.use(cookieParser('sbellfanmossall'));
 // app.use(cookieSession({
