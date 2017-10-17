@@ -5,7 +5,7 @@ var express = require('express'),
     urls    = require('url'),
     util    = require('util'),
     https   = require('https'),
-    bodyParser = require('body-parser'),
+//    bodyParser = require('body-parser'),
     cookieParser = require('cookie-parser'),
     cookieSession = require('cookie-session'),
     morgan  = require('morgan');
@@ -26,7 +26,8 @@ Object.assign=require('object-assign')
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
-app.use(bodyParser.urlencoded());
+app.use(express.urlencoded());
+//app.use(bodyParser.urlencoded());
 //app.use(express.multipart());
 
 app.use(cookieParser('sbellfanmossall'));
