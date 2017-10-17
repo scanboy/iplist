@@ -5,6 +5,9 @@ var express = require('express'),
     urls    = require('url'),
     util    = require('util'),
     https   = require('https'),
+    bodyParser = require('body-parser'),
+    cookieParser = require('cookie-parser'),
+    cookieSession = require('cookie-session'),
     morgan  = require('morgan');
     
 var message = '';
@@ -23,18 +26,14 @@ Object.assign=require('object-assign')
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
-app.use(express.body-parser());
+app.use(bodyParser.urlencoded());
 //app.use(express.multipart());
 
-app.use(express.cookie-parser('sbellfanmossall'));
-app.use(function(req, res, next) {
-  express.cookieSession({
-    cookie: {
-      maxAge: 1000 * 60 * 5
-    },
-  })(req, res, next);
-});
-
+app.use(cookieParser('sbellfanmossall'));
+app.use(cookieSession({
+  name: 'timeout',
+  maxAge: 1000 * 60 * 5
+}));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
