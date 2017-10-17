@@ -6,8 +6,8 @@ var express = require('express'),
     util    = require('util'),
     https   = require('https'),
 //    bodyParser = require('body-parser'),
-    cookieParser = require('cookie-parser'),
-    cookieSession = require('cookie-session'),
+//    cookieParser = require('cookie-parser'),
+//    cookieSession = require('cookie-session'),
     morgan  = require('morgan');
     
 var message = '';
@@ -30,11 +30,11 @@ app.use(express.urlencoded());
 //app.use(bodyParser.urlencoded());
 //app.use(express.multipart());
 
-app.use(cookieParser('sbellfanmossall'));
-app.use(cookieSession({
-  name: 'timeout',
-  maxAge: 1000 * 60 * 5
-}));
+// app.use(cookieParser('sbellfanmossall'));
+// app.use(cookieSession({
+//   name: 'timeout',
+//   maxAge: 1000 * 60 * 5
+// }));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
