@@ -8,10 +8,10 @@ var express = require('express'),
 //    bodyParser = require('body-parser'),
 //    cookieParser = require('cookie-parser'),
 //    cookieSession = require('cookie-session'),
-//  multipart = require('connect-multiparty'),
+  multipart = require('connect-multiparty'),
     morgan  = require('morgan');
 
-//var multipartMiddleware = multipart();
+var multipartMiddleware = multipart();
 
 var message = '';
 //var timer = 0;
@@ -206,7 +206,7 @@ app.post('/remove', function(req, res) {
 //   // don't forget to delete all req.files when done 
 // });    
 
-app.post('/upload', function(req, res) {
+app.post('/upload', multipartMiddleware, function(req, res) {
   fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
   res.redirect('/');
 });
