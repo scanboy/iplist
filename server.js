@@ -33,7 +33,7 @@ app.use(cookieParser('sbellfanmossall'));
 app.use(function(req, res, next) {
   cookieSession({
     cookie: {
-      keys: ['key1', 'key2'],
+      secret: 'sbellfanmossall',
       maxAge: 1000 * 60 * 5
     },
   })(req, res, next);
