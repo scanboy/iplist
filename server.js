@@ -14,7 +14,7 @@ var express       = require('express'),
 var multipartMiddleware = multipart();
 
 var message = '';
-//var timer = 0;
+var timer = 0;
 var style;
 var script;
 var path = 'public/';
@@ -33,6 +33,7 @@ app.use(cookieParser('sbellfanmossall'));
 app.use(function(req, res, next) {
   cookieSession({
     cookie: {
+      keys: ['key1', 'key2'],
       maxAge: 1000 * 60 * 5
     },
   })(req, res, next);
