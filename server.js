@@ -47,6 +47,9 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
 ////////////////////////////////////////////////////////////////////////
 var readInfo = function() {
   try {
+    fs.mkdirSync(path);
+  } catch (err) {}
+  try {
     iplist = JSON.parse(fs.readFileSync(ipfile).toString());
   } catch (err) {}
   try {
