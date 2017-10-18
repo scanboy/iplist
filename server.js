@@ -30,14 +30,13 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.use(cookieParser('sbellfanmossall'));
-app.use(function(req, res, next) {
-  cookieSession({
-    keys: ['key1', 'key2'],
-    cookie: {
-      maxAge: 1000 * 60 * 5
-    },
-  })(req, res, next);
-});
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  cookie: {
+    maxAge: 1000 * 60 * 5
+  }
+}));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
