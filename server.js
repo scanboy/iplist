@@ -32,8 +32,8 @@ app.use(express.urlencoded());
 app.use(cookieParser('sbellfanmossall'));
 app.use(function(req, res, next) {
   cookieSession({
+    keys: ['key1', 'key2'],
     cookie: {
-      signed: false,
       maxAge: 1000 * 60 * 5
     },
   })(req, res, next);
