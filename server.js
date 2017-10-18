@@ -33,7 +33,8 @@ app.use(cookieParser('sbellfanmossall'));
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],
-  maxAge: 1000 * 60 * 5
+//  maxAge: 1000 * 60 * 5
+  maxAge: 1000 * 5
 }));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
@@ -117,8 +118,9 @@ app.get('/', function(req, res) {
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
-    req.session.maxAge = 1000 * 60 * 5;
-//    req.session.cookie.maxAge = 1000 * 60 * 5;
+    //req.session.maxAge = 1000 * 60 * 5;
+    req.session.maxAge = 1000 * 5;
+////    req.session.cookie.maxAge = 1000 * 60 * 5;
     res.send(basePage() + accessPage());
   }
 });
