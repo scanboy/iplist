@@ -1,15 +1,15 @@
 //  OpenShift sample Node application
-var express = require('express'),
-    app     = express(),
-    fs      = require('fs'),
-    urls    = require('url'),
-    util    = require('util'),
-    https   = require('https'),
-//    bodyParser = require('body-parser'),
-//    cookieParser = require('cookie-parser'),
-//    cookieSession = require('cookie-session'),
-  multipart = require('connect-multiparty'),
-    morgan  = require('morgan');
+var express       = require('express'),
+    app           = express(),
+    fs            = require('fs'),
+    urls          = require('url'),
+    util          = require('util'),
+    https         = require('https'),
+    // bodyParser    = require('body-parser'),
+    cookieParser  = require('cookie-parser'),
+    // cookieSession = require('cookie-session'),
+    multipart     = require('connect-multiparty'),
+    morgan        = require('morgan');
 
 var multipartMiddleware = multipart();
 
@@ -30,11 +30,10 @@ app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
 app.use(express.urlencoded());
-//app.use(express.multipart());
 
 
 
-// app.use(cookieParser('sbellfanmossall'));
+app.use(cookieParser('sbellfanmossall'));
 // app.use(cookieSession({
 //   name: 'timeout',
 //   maxAge: 1000 * 60 * 5
@@ -48,7 +47,7 @@ var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
 ////////////////////////////////////////////////////////////////////////
 var readInfo = function() {
   try {
-    iplist = JSON.parse(fs.readFileSync(path + ipfile).toString());
+    iplist = JSON.parse(fs.readFileSync(ipfile).toString());
   } catch (err) {}
   try {
       style = '<style>' + fs.readFileSync('css/index.css').toString() + '</style>';
@@ -87,8 +86,6 @@ var accessPage = function() {
   var page;
   var files = fs.readdirSync(path);
 
-  //message = 'Session timed out. Please login again.';
-  //timer = '';
   // File access
   page = '<h3>Files available in: <b style="color: blue;padding-left: 10px;">public/</b></h3><form id="rmlist" action="/remove" method="post"><table class="space"><tr><th>Name</th><th>Last modified</th><th>Size</th></tr><tr><th colspan="3"><hr/></th></tr>';
   for (var f in files) {
@@ -114,7 +111,7 @@ app.get('/', function(req, res) {
   // } catch (err) {
   //   res.send("read failed!")
   // } 
-  fs.appendFile('log.txt', "/ " + global.timer + "\n");
+//  fs.appendFile('log.txt', "/ " + global.timer + "\n");
   if (global.timer == 0) {
     message = 'Session timed out. Please login again.';
 //    global.timer = 0;
@@ -125,7 +122,7 @@ app.get('/', function(req, res) {
 });
 
 app.post('/login', function(req, res) {
-  fs.appendFile('log.txt', "forma info: " + JSON.stringify(req.body) + "\n");
+//  fs.appendFile('log.txt', "forma info: " + JSON.stringify(req.body) + "\n");
 //  fs.appendFile('log.txt', req.body.user + "\n");
 //  fs.appendFile('log.txt', req.body.pwd + "\n");
   try {
