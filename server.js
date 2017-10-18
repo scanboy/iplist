@@ -114,7 +114,7 @@ app.get('/', function(req, res) {
   // } catch (err) {
   //   res.send("read failed!")
   // } 
-//  fs.appendFile('log.txt', "/ " + global.timer + "\n");
+  fs.appendFile('log.txt', "/ \n\t" + JSON.stringify(req.session) + "\n");
   if (!req.session.user) {
     message = 'Session timed out. Please login again.';
     timer = 0;
