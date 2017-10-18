@@ -7,7 +7,7 @@ var express       = require('express'),
     https         = require('https'),
     // bodyParser    = require('body-parser'),
     cookieParser  = require('cookie-parser'),
-    // cookieSession = require('cookie-session'),
+    cookieSession = require('cookie-session'),
     multipart     = require('connect-multiparty'),
     morgan        = require('morgan');
 
@@ -22,8 +22,6 @@ var ipfile = 'iplist.json';
 var pwfile = 'password.json';
 var iplist = {};
 
-global.timer = 0;
-
 Object.assign=require('object-assign')
 
 app.engine('html', require('ejs').renderFile);
@@ -31,13 +29,14 @@ app.use(morgan('combined'))
 app.use(express.json());
 app.use(express.urlencoded());
 
-
-
 app.use(cookieParser('sbellfanmossall'));
-// app.use(cookieSession({
-//   name: 'timeout',
-//   maxAge: 1000 * 60 * 5
-// }));
+app.use(function(req, res, next) {
+  cookieSession({
+    cookie: {
+      maxAge: 1000 * 60 * 5
+    },
+  })(req, res, next);
+});
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
@@ -115,9 +114,9 @@ app.get('/', function(req, res) {
   //   res.send("read failed!")
   // } 
 //  fs.appendFile('log.txt', "/ " + global.timer + "\n");
-  if (global.timer == 0) {
+  if (!req.session.user) {
     message = 'Session timed out. Please login again.';
-//    global.timer = 0;
+    timer = 0;
     res.send(basePage() + loginPage());
   } else {
     res.send(basePage() + accessPage());
@@ -131,21 +130,22 @@ app.post('/login', function(req, res) {
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
-      message = ''
-      global.timer = 1;
-      fs.appendFile('log.txt', "/login: success " + global.timer + "\n");
+      req.session.user = "klau";
+      message = '';
+      timer = 1;
+//      fs.appendFile('log.txt', "/login: success " + global.timer + "\n");
     } else {
 //      message = JSON.stringify(auth);
       message = "Invalid username/password!";
-      global.timer = 0;
-      fs.appendFile('log.txt', "/login: failed " + global.timer + "\n");
+      timer = 0;
+//      fs.appendFile('log.txt', "/login: failed " + global.timer + "\n");
     }
   } catch (err) {
 //    message = JSON.stringify(auth);
-    fs.appendFile('log.txt', "Error: " + err.message + "\n");
+//    fs.appendFile('log.txt', "Error: " + err.message + "\n");
     message = "Username/password info not found!";
-    global.timer = 0;
-    fs.appendFile('log.txt', "/login: catch " + global.timer + "\n");
+    timer = 0;
+//    fs.appendFile('log.txt', "/login: catch " + global.timer + "\n");
   }
   res.redirect('/');
 });
