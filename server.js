@@ -35,7 +35,7 @@ app.use(cookieSession({
   keys: ['key1', 'key2'],
   cookie: {
     maxAge: 1000 * 60 * 5
-  }
+  },
 }));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
