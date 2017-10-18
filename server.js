@@ -33,7 +33,7 @@ app.use(cookieParser('sbellfanmossall'));
 app.use(function(req, res, next) {
   cookieSession({
     cookie: {
-      secret: 'sbellfanmossall',
+      signed: false,
       maxAge: 1000 * 60 * 5
     },
   })(req, res, next);
@@ -120,6 +120,7 @@ app.get('/', function(req, res) {
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
+    req.session.cookie.maxAge = 1000 * 60 * 5;
     res.send(basePage() + accessPage());
   }
 });
