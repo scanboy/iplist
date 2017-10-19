@@ -5,7 +5,7 @@ var express       = require('express'),
     urls          = require('url'),
     util          = require('util'),
     https         = require('https'),
-    // bodyParser    = require('body-parser'),
+    bodyParser    = require('body-parser'),
     cookieParser  = require('cookie-parser'),
     cookieSession = require('cookie-session'),
     multipart     = require('connect-multiparty'),
@@ -27,15 +27,15 @@ Object.assign=require('object-assign')
 app.engine('html', require('ejs').renderFile);
 app.use(morgan('combined'))
 app.use(express.json());
-app.use(express.urlencoded());
+app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(cookieParser('sbellfanmossall'));
 app.use(function(req, res, next) {
   cookieSession({
     name: 'session',
     keys: ['key1', 'key2'],
-//    maxAge: 1000 * 60 * 5
-    maxAge: 1000 * 5
+    maxAge: 1000 * 60 * 5
+//    maxAge: 1000 * 5
   })(req, res, next);
 });
 
@@ -108,48 +108,31 @@ var accessPage = function() {
 // Get endpoints
 ////////////////////////////////////////////////////////////////////////
 app.get('/', function(req, res) {
-  // try {
-  //   var auth = JSON.parse(fs.readFileSync(pwfile).toString());
-  //   res.send(auth["username"] + auth["password"]);
-  // } catch (err) {
-  //   res.send("read failed!")
-  // } 
-  fs.appendFile('log.txt', "/ \n\t" + JSON.stringify(req.session) + "\n");
   if (!req.session.user) {
     message = 'Session timed out. Please login again.';
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
-    //req.session.maxAge = 1000 * 60 * 5;
-    req.session.maxAge = 1000 * 5;
-////    req.session.cookie.maxAge = 1000 * 60 * 5;
+    req.session.maxAge = 1000 * 60 * 5;
+//    req.session.maxAge = 1000 * 5;
     res.send(basePage() + accessPage());
   }
 });
 
 app.post('/login', function(req, res) {
-//  fs.appendFile('log.txt', "forma info: " + JSON.stringify(req.body) + "\n");
-//  fs.appendFile('log.txt', req.body.user + "\n");
-//  fs.appendFile('log.txt', req.body.pwd + "\n");
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
       req.session.user = "klau";
       message = '';
       timer = 1;
-//      fs.appendFile('log.txt', "/login: success " + global.timer + "\n");
     } else {
-//      message = JSON.stringify(auth);
       message = "Invalid username/password!";
       timer = 0;
-//      fs.appendFile('log.txt', "/login: failed " + global.timer + "\n");
     }
   } catch (err) {
-//    message = JSON.stringify(auth);
-//    fs.appendFile('log.txt', "Error: " + err.message + "\n");
     message = "Username/password info not found!";
     timer = 0;
-//    fs.appendFile('log.txt', "/login: catch " + global.timer + "\n");
   }
   res.redirect('/');
 });
@@ -161,22 +144,6 @@ app.get('/updateip', function(req, res) {
   res.send('Saved.\n');
   fs.writeFileSync('iplist.json', JSON.stringify(iplist));
 });
-
-// app.get('/pagecount', function (req, res) {
-//   // try to initialize the db on every request if it's not already
-//   // initialized.
-//   // if (!db) {
-//   //   initDb(function(err){});
-//   // }
-//   // if (db) {
-//   //   db.collection('counts').count(function(err, count ){
-//   //     res.send('{ pageCount: ' + count + '}');
-//   //   });
-//   // } else {
-//   //   res.send('{ pageCount: -1 }');
-//   // }
-//   res.send('<html><head></head><body><h1>test</h1></body></html>')
-// });
 
 app.get('/public/:file', function(req, res) {
   res.download(path + req.params.file);
@@ -204,11 +171,6 @@ app.post('/remove', function(req, res) {
   }
   res.redirect('/');      
 });
-
-// app.post('/upload', multipartMiddleware, function(req, resp) {
-//   console.log(req.body, req.files);
-//   // don't forget to delete all req.files when done 
-// });    
 
 app.post('/upload', multipartMiddleware, function(req, res) {
   fs.createReadStream(req.files.file.path).pipe(fs.createWriteStream(path + req.files.file.originalFilename));
