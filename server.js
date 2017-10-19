@@ -31,16 +31,6 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(cookieParser('sbellfanmossall'));
-app.use(function(req, res, next) {
-  session({
-    cookie: {
-//      maxAge: 1000 * 60 * 5
-      maxAge: 1000 * 10
-    },
-  })(req, res, next);
-});
-    
-// app.use(cookieParser('sbellfanmossall'));
 // app.use(function(req, res, next) {
 //   cookieSession({
 //     name: 'session',
@@ -49,6 +39,12 @@ app.use(function(req, res, next) {
 // //    maxAge: 1000 * 5
 //   })(req, res, next);
 // });
+app.use(cookieSession({
+  name: 'session',
+  keys: ['key1', 'key2'],
+  maxAge: 1000 * 60 * 5
+//  maxAge: 1000 * 5
+  }));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
@@ -124,8 +120,8 @@ app.get('/', function(req, res) {
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
-//    req.session.maxAge = 1000 * 60 * 5;
-    req.session.cookie.maxAge = 1000 * 10;
+    req.session.maxAge = 1000 * 60 * 5;
+//    req.session.cookie.maxAge = 1000 * 10;
     res.send(basePage() + accessPage());
   }
 });
