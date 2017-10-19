@@ -30,12 +30,14 @@ app.use(express.json());
 app.use(express.urlencoded());
 
 app.use(cookieParser('sbellfanmossall'));
-app.use(cookieSession({
-  name: 'session',
-  keys: ['key1', 'key2'],
-//  maxAge: 1000 * 60 * 5
-  maxAge: 1000 * 5
-}));
+app.use(function(req, res, next) {
+  cookieSession({
+    name: 'session',
+    keys: ['key1', 'key2'],
+//    maxAge: 1000 * 60 * 5
+    maxAge: 1000 * 5
+  })(req, res, next);
+});
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
