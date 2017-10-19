@@ -113,7 +113,6 @@ app.get('/', function(req, res) {
     res.send(basePage() + loginPage());
   } else {
     req.session.maxAge = 1000 * 60 * 5;
-//    req.session.cookie.maxAge = 1000 * 10;
     res.send(basePage() + accessPage());
   }
 });
