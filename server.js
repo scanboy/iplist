@@ -9,7 +9,7 @@ var express       = require('express'),
     cookieParser  = require('cookie-parser'),
     cookieSession = require('cookie-session'),
     multipart     = require('connect-multiparty'),
-    session       = require('express-session'),
+    bcrypt        = require('bcrypt'),
     morgan        = require('morgan');
 
 var multipartMiddleware = multipart();
@@ -31,14 +31,6 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
 app.use(cookieParser('sbellfanmossall'));
-// app.use(function(req, res, next) {
-//   cookieSession({
-//     name: 'session',
-//     keys: ['key1', 'key2'],
-//     maxAge: 1000 * 60 * 5
-// //    maxAge: 1000 * 5
-//   })(req, res, next);
-// });
 app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],
@@ -129,6 +121,8 @@ app.get('/', function(req, res) {
 app.post('/login', function(req, res) {
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
+    var hash = bcrypt.hashSync(auth["password"], 10);
+    fs.writeFileSync('test.json', hash);
     if (req.body.user == auth["username"] && req.body.pwd == auth["password"]) {
       req.session.user = "klau";
       message = '';
