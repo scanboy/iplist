@@ -121,10 +121,8 @@ app.get('/', function(req, res) {
 app.post('/login', function(req, res) {
   try {
     var auth = JSON.parse(fs.readFileSync(pwfile).toString());
-    // var hash = bcrypt.hashSync(auth["password"], 10);
-    // fs.writeFileSync('test.json', hash);
-
-    // if(bcrypt.compareSync('somePassword', hash)) {
+    var hash = bcrypt.hashSync(req.body.pwd, 10);
+    fs.writeFileSync('test.json', hash);
 
     if (req.body.user == auth["username"] && bcrypt.compareSync(req.body.pwd, auth["password"])) {
       req.session.user = "klau";
