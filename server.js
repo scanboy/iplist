@@ -35,7 +35,7 @@ app.use(function(req, res, next) {
   session({
     cookie: {
 //      maxAge: 1000 * 60 * 5
-      maxAge: 1000 * 5
+      maxAge: 1000 * 10
     },
   })(req, res, next);
 });
@@ -125,7 +125,7 @@ app.get('/', function(req, res) {
     res.send(basePage() + loginPage());
   } else {
 //    req.session.maxAge = 1000 * 60 * 5;
-    req.session.cookie.maxAge = 1000 * 5;
+    req.session.cookie.maxAge = 1000 * 10;
     res.send(basePage() + accessPage());
   }
 });
