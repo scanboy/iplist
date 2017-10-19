@@ -30,7 +30,7 @@ app.use(morgan('combined'))
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: false}));
 
-app.use(express.cookieParser('sbellfanmossall'));
+app.use(cookieParser('sbellfanmossall'));
 app.use(function(req, res, next) {
   session({
     cookie: {
