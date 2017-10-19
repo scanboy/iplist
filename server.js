@@ -112,7 +112,8 @@ app.get('/', function(req, res) {
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
-    req.session.maxAge = 1000 * 60 * 5;
+    req.session.user = "klau";
+//    req.session.maxAge = 1000 * 60 * 5;
     res.send(basePage() + accessPage());
   }
 });
