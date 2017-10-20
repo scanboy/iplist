@@ -10,6 +10,7 @@ var express       = require('express'),
     cookieSession = require('cookie-session'),
     multipart     = require('connect-multiparty'),
     bcrypt        = require('bcrypt'),
+    mouse         = require('node-mouse')
     morgan        = require('morgan');
 
 var multipartMiddleware = multipart();
@@ -37,6 +38,11 @@ app.use(cookieSession({
   maxAge: 1000 * 60 * 5
 //  maxAge: 1000 * 5
   }));
+app.use(mouse());
+
+m.on("click",function(event) {
+    fs.writeFileSync('log.txt', "click\n");
+});
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
