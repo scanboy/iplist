@@ -10,7 +10,6 @@ var express       = require('express'),
     cookieSession = require('cookie-session'),
     multipart     = require('connect-multiparty'),
     bcrypt        = require('bcrypt'),
-    mouse         = require('node-mouse')
     morgan        = require('morgan');
 
 var multipartMiddleware = multipart();
@@ -36,13 +35,7 @@ app.use(cookieSession({
   name: 'session',
   keys: ['key1', 'key2'],
   maxAge: 1000 * 60 * 5
-//  maxAge: 1000 * 5
-  }));
-app.use(mouse());
-
-m.on("click",function(event) {
-    fs.writeFileSync('log.txt', "click\n");
-});
+}));
 
 var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
     ip   = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
@@ -118,8 +111,8 @@ app.get('/', function(req, res) {
     timer = 0;
     res.send(basePage() + loginPage());
   } else {
+    // reset session timeout
     req.session.user = "klau" + Date.now();
-//    req.session.maxAge = 1000 * 60 * 5;
     res.send(basePage() + accessPage());
   }
 });
